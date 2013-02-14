@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      .loader {
+         background: url("/static/loading.gif") no-repeat;
+         margin-top: 20px;
+         width: 100%;
+         height: 40px;
+       }
+    </style>
+  </head>
+  <body>
+    <div>
+      <input type="text" placeholder="Enter tag to search" id="query" />
+      <input type="button" value="search" id="search" />
+    </div>
+    <div id="results">
+    </div>
+
+    <script type="text/javascript" src="/static/jquery1.8.2.min.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+          $("#search").click(onHashSearch);
+      });
+
+      onHashSearch = function() {
+          $("#results").html("");
+          $("#results").addClass("loader");
+          var query = encodeURIComponent($("#query").val());
+          $.get('/api/hash_get/' + query, function(data) { 
+              $("#results").removeClass("loader");
+              for(var i=0; i<data.results.length; i++) {
+                 var tweetObj = data.results[i];
+                 var displayText = tweetObj.from_user_name + ":  " + tweetObj.text;
+                 $("#results").append(displayText + "<br>");
+              }  
+          }, 'json');
+      }
+    </script>
+
+  </body>
+</html>
